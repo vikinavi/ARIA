@@ -1,0 +1,75 @@
+name: Minimal APK Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.13.9'
+          channel: 'stable'
+          
+      - name: Create minimal Flutter project
+        run: |
+          flutter create --project-name aria_minimal --org com.vikinavi minimal_app
+          cd minimal_app
+          
+      - name: Replace main.dart with simple app
+        run: |
+          cd minimal_app
+          cat > lib/main.dart << 'EOF'
+          import 'package:flutter/material.dart';
+          
+          void main() => runApp(MyApp());
+          
+          class MyApp extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return MaterialApp(
+                title: 'ARIA AI Agent',
+                home: Scaffold(
+                  appBar: AppBar(title: Text('ARIA AI Agent')),
+                  body: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('🤖 ARIA AI Agent', style: TextStyle(fontSize: 24)),
+                        SizedBox(height: 20),
+                        Text('Hello World!', style: TextStyle(fontSize: 18)),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () => print('Button pressed!'),
+                          child: Text('Click Me'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+          }
+          EOF
+          
+      - name: Build APK
+        run: |
+          cd minimal_app
+          flutter build apk --release
+          
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ARIA-Simple.apk
+          path: minimal_app/build/app/outputs/flutter-apk/app-release.apk
