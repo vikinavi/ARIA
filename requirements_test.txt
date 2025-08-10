@@ -1,0 +1,8 @@
+# Hello World Test Requirements
+# Minimal dependencies for testing
+
+# Build tools
+pyinstaller==6.3.0
+
+# Basic utilities (optional)
+colorama==0.4.6
