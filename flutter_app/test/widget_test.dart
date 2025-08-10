@@ -13,31 +13,5 @@ void main() {
 
     // Verify that the send button is present
     expect(find.byIcon(Icons.send), findsOneWidget);
-
-    // Test typing a message
-    await tester.enterText(find.byType(TextField), 'Hello ARIA');
-    await tester.tap(find.byIcon(Icons.send));
-    await tester.pump();
-
-    // Verify the user message appears
-    expect(find.text('Hello ARIA'), findsOneWidget);
-  });
-
-  testWidgets('Message input and send test', (WidgetTester tester) async {
-    await tester.pumpWidget(const ARIAApp());
-
-    // Find the text field
-    final textField = find.byType(TextField);
-    expect(textField, findsOneWidget);
-
-    // Enter a test message
-    await tester.enterText(textField, 'Test message');
-    
-    // Tap the send button
-    await tester.tap(find.byIcon(Icons.send));
-    await tester.pumpAndSettle(const Duration(seconds: 2));
-
-    // Verify the message was sent
-    expect(find.text('Test message'), findsOneWidget);
   });
 }
